@@ -1,1 +1,3 @@
-# ukma-2026-web-tech-basics
+Коломоєць Дарія
+
+d.kolomoiets@ukma.edu.ua КН-1 група 1
