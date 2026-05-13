@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuyList</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="main-container">
+
+    <section class="card editor-section">
+        <div class="input-group">
+            <input type="text" placeholder="Назва товару" aria-label="Назва товару">
+            <button class="btn-add" data-tooltip="Додати товар до списку">Додати</button>
+        </div>
+
+        <div class="items-list">
+            <div class="product-row">
+    <span class="product-name bought">Помідори</span> 
+    <div class="controls">
+        <div class="quantity-wrapper">
+        <span class="quantity-badge">2</span>
+        </div>
+        <button class="btn-status" data-tooltip="Повернути у список">Не куплено</button>
+    </div>
+</div>
+
+            <div class="product-row">
+                <span class="product-name">Печиво</span>
+                <div class="controls">
+                    <button class="btn-round btn-minus" data-tooltip="Зменшити на 1">-</button>
+                    <span class="quantity-badge">2</span>
+                    <button class="btn-round btn-plus" data-tooltip="Збільшити на 1">+</button>
+                    <button class="btn-status" data-tooltip="Позначити як куплене">Куплено</button>
+                    <button class="btn-danger" data-tooltip="Видалити">×</button>
+                </div>
+            </div>
+
+            <div class="product-row">
+                <input type="text" value="Сир" class="edit-input">
+                <div class="controls">
+                    <button class="btn-round btn-minus-light" data-tooltip="Зменшити на 1">-</button>
+                    <span class="quantity-badge">1</span>
+                    <button class="btn-round btn-plus" data-tooltip="Збільшити на 1">+</button>
+                    <button class="btn-status" data-tooltip="Позначити як куплене">Куплено</button>
+                    <button class="btn-danger" data-tooltip="Видалити">×</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <aside class="card stats-section">
+        <div class="stats-group">
+            <h3>Залишилося</h3>
+            <div class="tags">
+                <span class="tag">Печиво <span class="tag-num">2</span></span>
+                <span class="tag">Сир <span class="tag-num">1</span></span>
+        </div>
+        </div>
+        <hr>
+        <div class="stats-group">
+            <h3>Куплено</h3>
+            
+            <div class="tags">
+                <span class="tag strike">Помідори <span class="tag-num">2</span></span>
+            </div>
+    </div>
+    </aside>
+</div>
+
+<div class="badge">
+    <div class="badge-header">BuyList</div>
+    <div class="badge-content">Робота Дарії Коломоєць</div>
+</div>
+
+</body>
+</html>
