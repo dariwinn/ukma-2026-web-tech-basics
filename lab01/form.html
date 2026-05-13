@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Реєстрація на спеціальність</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Реєстрація на спеціальність</h1>
+
+    <form action="#" method="post">
+    
+        <fieldset>
+            <legend>Особисті дані</legend>
+            
+            <p>
+                <label for="fname">Ім’я:</label><br>
+                <input type="text" id="fname" name="first_name" required minlength="3">
+            </p>
+
+            <p>
+                <label for="lname">Прізвище:</label><br>
+                <input type="text" id="lname" name="last_name" required minlength="3">
+            </p>
+
+            <p>
+                <label for="bday">Дата народження:</label><br>
+                <input type="date" id="bday" name="birth_date" required>
+            </p>
+        </fieldset>
+
+        <fieldset>
+            <legend>Контакти та Спеціальність</legend>
+
+            <p>
+                <label for="u-email">Електронна пошта:</label><br>
+                <input type="email" id="u-email" name="email" required>
+            </p>
+
+            <p>
+                <label for="u-pass">Пароль:</label><br>
+                <input type="text" id="u-pass" name="password" required minlength="8">
+            </p>
+
+            <p>
+                <label for="u-pass-confirm">Підтвердженя пароля:</label><br>
+                <input type="text" id="u-pass-confirm" name="confirm_password" required minlength="8">
+            </p>
+
+            <p>
+                <label for="spec">Спеціальність:</label><br>
+                <select id="spec" name="specialty" required>
+                    <option value="">Оберіть варіант</option>
+                    <option value="f2">F2 Інженерія програмного забезпечення</option>
+                    <option value="f3">F3 Комп'ютерні науки</option>
+                    <option value="f4">F4 Кібербезпека</option>
+                    <option value="f5">F5 Робототехніка </option>
+                    <option value="f6">F6 Прикладна математика </option>
+                </select>
+            </p>
+        </fieldset>
+        <p>
+            <input type="checkbox" id="terms" name="agree" required>
+            <label for="terms">Я погоджуюся з правилами та умовами користування</label>
+        </p>
+        <button type="submit">Зареєструватися на курс </button>
+
+    </form>
+
+
+    
+</body>
+</html>
