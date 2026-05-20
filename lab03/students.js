@@ -70,7 +70,7 @@ console.log("4. Групування за полем 'group'");
 console.log(groupBy(students, "group"));
 
 console.log("5. Додавання оцінки (Перевірка на імутабельність)");
-const updatedStudents = addGrade(students, "С", 100);
+const updatedStudents = addGrade(students, "Муратова Саша", 100);
 
 console.log("Змінений масив (Муратова Олександра має отримати 100):");
 console.log(updatedStudents.find(s => s.name === "Муратова Саша"));
