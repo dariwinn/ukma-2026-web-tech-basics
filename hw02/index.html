@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuyList</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="main-container">
+
+    <section class="card editor-section">
+        <div class="input-group">
+            <input type="text" id="product-input" placeholder="Назва товару" aria-label="Назва товару">
+            <button class="btn-add" id="btn-add" data-tooltip="Додати товар до списку">Додати</button>
+        </div>
+
+        <div class="items-list" id="items-list"></div>
+    </section>
+
+    <aside class="card stats-section">
+        <div class="stats-group">
+            <h3>Залишилося</h3>
+            <div class="tags" id="left-tags"></div>
+        </div>
+        <hr>
+        <div class="stats-group">
+            <h3>Куплено</h3>
+            <div class="tags" id="bought-tags"></div>
+        </div>
+    </aside>
+</div>
+
+<div class="badge">
+    <div class="badge-header">BuyList</div>
+    <div class="badge-content">Робота Дарії Коломоєць</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
