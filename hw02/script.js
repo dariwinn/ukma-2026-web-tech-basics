@@ -1,5 +1,5 @@
 /* початковий масив із дефолтними товарами */
-let products = [
+let products = JSON.parse(localStorage.getItem('buylist_products')) ||[
     { id: 1, name: "Помідори", quantity: 2, bought: true },
     { id: 2, name: "Печиво", quantity: 2, bought: false },
     { id: 3, name: "Сир", quantity: 1, bought: false }
@@ -18,6 +18,9 @@ function render() {
     itemsList.innerHTML = '';
     leftTags.innerHTML = '';
     boughtTags.innerHTML = '';
+    
+    /*бонус*/ 
+    localStorage.setItem('buylist_products', JSON.stringify(products));
 
     /* генерація елементів для кожного товару з масиву */
     products.forEach(product => {
