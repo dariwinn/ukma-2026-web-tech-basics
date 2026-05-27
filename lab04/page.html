@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Task 1 — DOM-аналізатор</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; max-width: 760px; margin: 2rem auto; padding: 1rem; line-height: 1.5; }
+    article { border-bottom: 1px solid #ddd; padding: 1rem 0; }
+    aside { background: #f6f8fa; padding: 1rem; margin: 1rem 0; }
+    figure { margin: 1rem 0; }
+    figure img { width: 240px; height: 120px; background: #ccd; }
+    footer { color: #888; font-size: 0.9rem; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+
+  <header id="site-header">
+    <h1 id="main-title">МійБлог</h1>
+    <p>Про дизайн і код</p>
+  </header>
+
+  <main>
+    <article id="post-1">
+      <h2>Чому семантика важлива</h2>
+      <h4>Підрозділ через рівень (стрибок!)</h4>
+      <p>HTML без семантики — це купа квадратних коробок. Семантика додає сенсу для пошукових систем, скрін-рідерів, інших розробників.</p>
+      <p>На цьому курсі ми будемо повертатись до семантики постійно. Це не прикраса, а спосіб писати робочий код. Семантика, семантика, семантика.</p>
+      <figure>
+        <img src="/cover-1.jpg" width="240" height="120">
+        <figcaption>Графіка з прикладом — без alt!</figcaption>
+      </figure>
+      <p><a href="/post/semantics">Читати далі</a></p>
+    </article>
+
+    <article id="post-2">
+      <h2>5 типових помилок CSS</h2>
+      <h3>Помилка перша: !important</h3>
+      <p>Класика, на якій горять початківці. !important породжує війну !important. Уникайте.</p>
+      <h3>Помилка друга: магічні z-index</h3>
+      <p>z-index: 9999 — це симптом архітектурної проблеми. Не лікувати симптом.</p>
+      <p><a href="https://example.com/css-mistakes">Зовнішня стаття</a> <a href="https://other.com">ще одне зовнішнє</a></p>
+      <img src="/cover-2.jpg" alt="">
+    </article>
+
+    <article id="post-3">
+      <h2>Доступність — це не складно</h2>
+      <p>Зведемо a11y до трьох простих правил: alt у img, label у input, button замість div. Доступність, доступність.</p>
+      <div>
+        <div>
+          <div id="deeply-nested">
+            <p class="highlight">Цей абзац найглибше вкладений у документі.</p>
+          </div>
+        </div>
+      </div>
+      <p><a href="/post/a11y">Читати далі</a></p>
+    </article>
+  </main>
+
+  <aside id="sidebar">
+    <h3>Останні</h3>
+    <ul>
+      <li><a href="/post-1">Семантика</a></li>
+      <li><a href="https://twitter.com">Twitter</a></li>
+      <li><a href="/post-3">Доступність</a></li>
+    </ul>
+    <img src="/avatar.jpg">
+  </aside>
+
+  <footer id="site-footer">
+    <p>© 2026 МійБлог. <a href="/about">Про</a> · <a href="https://rss.org">RSS</a></p>
+  </footer>
+
+  <script src="inspector.js"></script>
+</body>
+</html>
