@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Варіант 9: Дашборд продажів (Chart.js)</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Дашборд продажів магазину</h1>
+        
+        <div class="control-panel">
+            <label for="categorySelect">Оберіть товарну категорію: </label>
+            <select id="categorySelect">
+                <option value="electronics">Електроніка</option>
+                <option value="clothing">Одяг</option>
+                <option value="books">Книги</option>
+            </select>
+        </div>
+
+        <div class="dashboard">
+            <div class="chart-box">
+                <h2>Продажі по місяцях (Поточний рік)</h2>
+                <canvas id="barChart"></canvas>
+            </div>
+            
+            <div class="chart-box">
+                <h2>Порівняння продажів (2024 vs 2025)</h2>
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

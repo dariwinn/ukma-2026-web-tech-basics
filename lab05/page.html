@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Task 1 — API Explorer</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; max-width: 1200px; margin: 1rem auto; padding: 1rem; line-height: 1.5; }
+    h1 { color: #2050a0; margin: 0 0 1rem; }
+
+    .layout { display: grid; grid-template-columns: 250px 1fr; gap: 1rem; }
+
+    /* === Sidebar (historу) === */
+    .sidebar { border: 1px solid #e1e4e8; border-radius: 6px; padding: 0.5rem; background: #fafbfc; }
+    .sidebar h3 { margin: 0 0 0.5rem; font-size: 0.9rem; color: #666; }
+    #history { list-style: none; padding: 0; margin: 0; }
+    #history li {
+      padding: 6px 8px; margin-bottom: 4px;
+      background: white; border: 1px solid #e1e4e8; border-radius: 4px;
+      cursor: pointer; font-size: 0.85rem;
+    }
+    #history li:hover { background: #e8f0fe; }
+    #history .method { font-weight: 700; margin-right: 6px; }
+    #history .status { float: right; font-size: 0.8em; }
+
+    /* === Main === */
+    .main { display: flex; flex-direction: column; gap: 1rem; }
+
+    /* === Form === */
+    .req-line { display: flex; gap: 0.5rem; }
+    #method {
+      padding: 8px; border: 1px solid #ccd; border-radius: 4px;
+      background: white; font-weight: 600; font-size: 0.95rem;
+    }
+    #url {
+      flex: 1; padding: 8px 12px; border: 1px solid #ccd; border-radius: 4px;
+      font-family: monospace; font-size: 0.95rem;
+    }
+    #send {
+      padding: 8px 24px; background: #2050a0; color: white;
+      border: none; border-radius: 4px; cursor: pointer; font-weight: 600;
+    }
+    #send:disabled { opacity: 0.6; cursor: wait; }
+
+    .panel { border: 1px solid #e1e4e8; border-radius: 6px; }
+    .panel h3 { margin: 0; padding: 0.5rem 1rem; background: #f6f8fa; border-bottom: 1px solid #e1e4e8; font-size: 0.9rem; }
+    .panel textarea {
+      width: 100%; min-height: 100px;
+      padding: 8px; border: none; resize: vertical;
+      font-family: monospace; font-size: 0.9rem;
+    }
+    .panel textarea:focus { outline: none; }
+    .error { color: #c33; padding: 0.5rem 1rem; font-size: 0.85em; background: #fee; }
+
+    /* === Response === */
+    #response { display: none; }
+    #response.visible { display: block; }
+    .status-line {
+      padding: 0.8rem 1rem; font-family: monospace; font-size: 1.05rem;
+      border-radius: 6px 6px 0 0;
+    }
+    .status-line.s2 { background: #e6f7eb; color: #2a8a4a; }
+    .status-line.s3 { background: #e8eef9; color: #2050a0; }
+    .status-line.s4 { background: #fff4e6; color: #b85c00; }
+    .status-line.s5 { background: #fde6e6; color: #c33; }
+    .status-line .elapsed { float: right; font-size: 0.85em; opacity: 0.7; }
+
+    .response-section { margin-top: 1rem; }
+    pre {
+      margin: 0; padding: 1rem; background: #f6f8fa;
+      border-radius: 0 0 6px 6px;
+      max-height: 400px; overflow: auto;
+      font-size: 0.85rem; font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>API Explorer</h1>
+
+  <div class="layout">
+
+    <aside class="sidebar">
+      <h3>Історія</h3>
+      <ul id="history">
+        <li style="background:#f6f8fa; color:#888; cursor: default;">Поки нічого</li>
+      </ul>
+    </aside>
+
+    <div class="main">
+
+      <div class="req-line">
+        <select id="method">
+          <option>GET</option>
+          <option>POST</option>
+          <option>PUT</option>
+          <option>PATCH</option>
+          <option>DELETE</option>
+        </select>
+        <input id="url" type="text" placeholder="https://httpbin.org/get" autofocus>
+        <button id="send">Send</button>
+      </div>
+
+      <div class="panel">
+        <h3>Headers (формат "key: value", по рядку)</h3>
+        <textarea id="headers" placeholder="Content-Type: application/json
+# Це коментар"></textarea>
+      </div>
+
+      <div class="panel">
+        <h3>Body (JSON для POST/PUT/PATCH)</h3>
+        <textarea id="body" placeholder='{"key": "value"}'></textarea>
+        <div id="body-error" class="error" hidden></div>
+      </div>
+
+      <div id="response">
+        <div id="status-line" class="status-line"></div>
+        <div class="response-section panel">
+          <h3>Response Headers</h3>
+          <pre id="response-headers"></pre>
+        </div>
+        <div class="response-section panel">
+          <h3>Response Body</h3>
+          <pre id="response-body"></pre>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
