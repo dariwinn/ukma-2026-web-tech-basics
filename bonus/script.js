@@ -1,218 +1,394 @@
-'use strict';
+// Заготовка початкового шаблону Судоку (де 0 — порожні клітинки)
+const PUZZLES = [
+    [
+        [5,3,0, 0,7,0, 0,0,0],
+        [6,0,0, 1,9,5, 0,0,0],
+        [0,9,8, 0,0,0, 0,6,0],
+        [8,0,0, 0,6,0, 0,0,3],
+        [4,0,0, 8,0,3, 0,0,1],
+        [7,0,0, 0,2,0, 0,0,6],
+        [0,6,0, 0,0,0, 2,8,0],
+        [0,0,0, 4,1,9, 0,0,5],
+        [0,0,0, 0,8,0, 0,7,9]
+    ]
+];
 
-const errorCountEl  = document.getElementById('error-count');
-const selectedLabel = document.getElementById('selected-label');
-const boardEl       = document.getElementById('sudoku-board');
-const messageEl     = document.getElementById('game-message');
-const notesChk      = document.getElementById('notes-mode');
+// Відсоток заповненості поля цифрами на початку гри (рівень складності)
+const FILL_PERCENTAGE = 75; 
 
-let solution, puzzle, board, notes, selected, errors, gameOver;
-const MAX_ERR  = 3;
-const ROW_N    = ['A','B','C','D','E','F','G','H','I'];
-const COL_N    = ['1','2','3','4','5','6','7','8','9'];
+// Глобальні змінні стану гри
+let board = [];         // Поточний стан дошки гравця (матриця 9х9)
+let solution = [];      // Повний правильний розв'язок судоку (матриця 9х9)
+let givens = [];        // Булева матриця 9х9: true для початкових підказок, false для пустих клітинок
+let errorCells = new Set(); // Колекція унікальних ключів помилкових клітинок (наприклад, "0-5")
+let errorCount = 0;     // Поточна кількість помилок гравця
+let selectedCell = null;// Об'єкт збереження координат поточної виділеної клітинки {r: row, c: col}
+let timerInterval = null;// ID інтервалу для лічильника часу
+let secondsElapsed = 0; // Скільки секунд триває гра
+let gameOver = false;   // Прапорець завершення гри
+let pivot = null;       // Екземпляр об'єкта WebDataRocks
 
-let pivot = null;
-
-function wdrData() {
-  return Array.from({ length: 81 }, (_, i) => {
-    const r = Math.floor(i / 9), c = i % 9;
-    let type = 'empty', value = 0;
-    if (puzzle[i])          { type = 'given'; value = puzzle[i]; }
-    else if (board[i])      { type = 'user';  value = board[i];  }
-    else if (notes[i].size) { type = 'note';  value = notes[i].size; }
-    return { Row: ROW_N[r], Col: COL_N[c], Type: type, Value: value };
-  });
-}
-
-function initWDR() {
-  if (pivot) { try { pivot.dispose(); } catch(e){} }
-  pivot = new WebDataRocks({
-    container: '#pivot-container',
-    toolbar: false,
-    report: {
-      dataSource: { data: wdrData() },
-      slice: {
-        rows:     [{ uniqueName: 'Row' }],
-        columns:  [{ uniqueName: 'Col' }],
-        measures: [{ uniqueName: 'Value', aggregation: 'sum' }]
-      },
-      options: { grid: { showHeaders: false, showTotals: 'off', showGrandTotals: 'off' } },
-      formats: [{ name: '', decimalPlaces: 0, nullValue: '' }]
+/**
+ * Валідатор: Перевіряє, чи можна поставити цифру `num` у координати `row`, `col`
+ */
+function isValidPlacement(grid, row, col, num) {
+    for (let i = 0; i < 9; i++) {
+        if (grid[row][i] === num) return false; // Перевірка дублікату в рядку
+        if (grid[i][col] === num) return false; // Перевірка дублікату в колонці
+        
+        // Магічна математика для знаходження індексів всередині малого квадрата 3х3
+        let br = 3 * Math.floor(row / 3) + Math.floor(i / 3);
+        let bc = 3 * Math.floor(col / 3) + (i % 3);
+        if (grid[br][bc] === num) return false; // Перевірка дублікату в квадраті 3х3
     }
-  });
+    return true; // Якщо колізій немає, розміщення валідне
 }
 
-function syncWDR() {
-  if (pivot) pivot.updateData({ data: wdrData() });
+/**
+ * Алгоритм Backtracking (пошук з поверненням) для автоматичного повного вирішення судоку
+ */
+function solve(grid) {
+    for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+            if (grid[r][c] === 0) { // Шукаємо пусту клітинку
+                for (let n = 1; n <= 9; n++) {
+                    if (isValidPlacement(grid, r, c, n)) {
+                        grid[r][c] = n; // Пробуємо поставити цифру
+                        if (solve(grid)) return true; // Рекурсивно йдемо далі
+                        grid[r][c] = 0; // Відкат назад (backtrack), якщо цифра не підійшла
+                    }
+                }
+                return false; // Якщо жодна цифра не підійшла, цей шлях тупиковий
+            }
+        }
+    }
+    return true; // Поле успішно заповнене
 }
 
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
+/**
+ * Форматування секунд у вигляд стрічки ММ:СС
+ */
+function formatTime(s) {
+    let m = Math.floor(s / 60);
+    let sec = s % 60;
+    return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
 }
 
-function isValid(b, idx, num) {
-  const r = Math.floor(idx / 9), c = idx % 9;
-  const br = Math.floor(r / 3) * 3, bc = Math.floor(c / 3) * 3;
-  for (let i = 0; i < 9; i++) {
-    if (b[r*9+i] === num || b[i*9+c] === num) return false;
-    if (b[(br + Math.floor(i/3)) * 9 + (bc + i%3)] === num) return false;
-  }
-  return true;
+/**
+ * Запуск таймера гри
+ */
+function startTimer() {
+    clearInterval(timerInterval); // Зупиняємо попередній таймер, якщо він працював
+    secondsElapsed = 0;
+    document.getElementById('timer').textContent = '00:00';
+    timerInterval = setInterval(() => {
+        secondsElapsed++;
+        document.getElementById('timer').textContent = formatTime(secondsElapsed);
+    }, 1000); // Оновлювати кожну 1 секунду
 }
 
-function solve(b, rand = false) {
-  const e = b.indexOf(0);
-  if (e === -1) return true;
-  for (const n of (rand ? shuffle([1,2,3,4,5,6,7,8,9]) : [1,2,3,4,5,6,7,8,9])) {
-    if (isValid(b, e, n)) { b[e] = n; if (solve(b, rand)) return true; b[e] = 0; }
-  }
-  return false;
+/**
+ * Перетворення нашої матриці 9х9 у плоский JSON-масив, який розуміє WebDataRocks
+ */
+function getWDRData() {
+    // Перший елемент — це опис архітектури (типів даних) колонок
+    let data = [{ "Рядок": { type: "string" }, "Колонка": { type: "string" }, "Значення": { type: "number" } }];
+    for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+            data.push({
+                "Рядок": "Рядок " + (r + 1),
+                "Колонка": "Колонка " + (c + 1),
+                "Значення": board[r][c] // Поточне значення на ігровій дошці
+            });
+        }
+    }
+    return data;
 }
 
-function countSol(b) {
-  const e = b.indexOf(0); if (e === -1) return 1;
-  let n = 0;
-  for (let v = 1; v <= 9; v++) {
-    if (isValid(b, e, v)) { b[e] = v; n += countSol(b); b[e] = 0; if (n > 1) return n; }
-  }
-  return n;
+/**
+ * Функція зворотного виклику WebDataRocks для стилізації клітинок (додавання класів)
+ */
+function customizeCell(cell, data) {
+    if (!data.rows[0] || !data.columns[0]) return; // Пропускаємо технічні підсумкові елементи
+
+    // Витягуємо індекси рядка та колонки з назв (наприклад з "Рядок 3" отримуємо число 3)
+    let rowVal = parseInt(data.rows[0].uniqueName.replace(/\D/g, ''));
+    let colVal = parseInt(data.columns[0].uniqueName.replace(/\D/g, ''));
+    if (isNaN(rowVal) || isNaN(colVal)) return;
+
+    let r = rowVal - 1; // Переводимо в індекси масиву (від 0 до 8)
+    let c = colVal - 1;
+    let key = r + '-' + c; // Ключ для Set
+    let val = board[r][c];
+
+    // Додаємо товсті грані для відокремлення секторів судоку 3х3
+    if (c === 2 || c === 5) cell.addClass("box-border-right");
+    if (r === 2 || r === 5) cell.addClass("box-border-bottom");
+
+    // Логіка призначення CSS класів залежно від статусу клітинки
+    if (selectedCell && selectedCell.r === r && selectedCell.c === c) {
+        cell.addClass("cell-selected"); // Клітинка виділена
+    } else if (errorCells.has(key)) {
+        cell.addClass("cell-error");    // У клітинці помилка
+    } else if (givens[r][c]) {
+        cell.addClass("cell-given");    // Це початкова підказка системи
+    } else if (val !== 0) {
+        cell.addClass("cell-player");   // Цифра введена гравцем
+    } else {
+        cell.addClass("cell-empty");    // Клітинка пуста
+    }
 }
 
-function generate() {
-  solution = Array(81).fill(0);
-  solve(solution, true);
-  puzzle = [...solution];
-  let removed = 0;
-  for (const i of shuffle([...Array(81).keys()])) {
-    if (removed >= 40) break;          // залишаємо ≥41 підказки
-    const bk = puzzle[i]; puzzle[i] = 0;
-    if (countSol([...puzzle]) === 1) removed++;
-    else puzzle[i] = bk;
-  }
+/**
+ * ХАК: Прямий пошук по DOM елементах зведеної таблиці для приховування технічних нулів WebDataRocks
+ */
+function hideAllZerosDirectly() {
+    let values = document.querySelectorAll('.wdr-grid-container .wdr-value');
+    values.forEach(el => {
+        if (el.textContent.trim() === "0") {
+            el.style.color = 'transparent'; // Робимо нуль невидимим
+            el.style.opacity = '0';
+        }
+    });
 }
 
-function render() {
-  boardEl.innerHTML = '';
-  for (let i = 0; i < 81; i++) {
-    const r = Math.floor(i / 9), c = i % 9;
-    const cell = document.createElement('div');
-    cell.className = 's-cell';
-    cell.dataset.idx = i;
-    cell.dataset.row = r;
-    cell.dataset.col = c;
+/**
+ * Відкриття модального вікна вибору цифри для конкретної клітинки
+ */
+function showInputOverlay(r, c) {
+    if (gameOver) return;
+    selectedCell = { r, c }; // Запам'ятовуємо, де клікнули
+    refreshBoard(); // Оновлюємо стилі, щоб підсвітити вибрану клітинку
 
-    if (puzzle[i]) {
-      cell.classList.add('given');
-      cell.textContent = puzzle[i];
-    } else if (board[i]) {
-      cell.classList.add(board[i] === solution[i] ? 'user-entered' : 'error');
-      cell.textContent = board[i];
-    } else if (notes[i].size) {
-      const ng = document.createElement('div');
-      ng.className = 'notes-grid';
-      for (let n = 1; n <= 9; n++) {
-        const d = document.createElement('div');
-        d.className = 'note-digit';
-        d.textContent = notes[i].has(n) ? n : '';
-        ng.appendChild(d);
-      }
-      cell.appendChild(ng);
+    let overlay = document.getElementById('input-overlay');
+    let container = document.getElementById('num-buttons');
+    let label = document.getElementById('input-label');
+
+    label.textContent = `Рядок ${r+1}, колонка ${c+1} — введіть цифру:`;
+    container.innerHTML = ''; // Очищаємо старі кнопки
+
+    // Динамічно створюємо 9 кнопок для вибору чисел від 1 до 9
+    for (let n = 1; n <= 9; n++) {
+        let btn = document.createElement('button');
+        btn.textContent = n;
+        btn.onclick = () => submitNumber(n); // Натискання викликає логіку перевірки
+        container.appendChild(btn);
     }
 
-    cell.addEventListener('click', () => selectCell(i));
-    boardEl.appendChild(cell);
-  }
-  highlight();
+    overlay.style.display = 'flex'; // Показуємо модалку
 }
 
-function highlight() {
-  document.querySelectorAll('.s-cell').forEach(el =>
-    el.classList.remove('selected', 'hl-zone', 'hl-num')
-  );
-  if (selected < 0) return;
-  const sr = Math.floor(selected / 9), sc = selected % 9;
-  const selVal = board[selected] || puzzle[selected];
-  document.querySelectorAll('.s-cell').forEach(el => {
-    const i = +el.dataset.idx, r = +el.dataset.row, c = +el.dataset.col;
-    if (i === selected) { el.classList.add('selected'); return; }
-    if (r === sr || c === sc || (Math.floor(r/3) === Math.floor(sr/3) && Math.floor(c/3) === Math.floor(sc/3)))
-      el.classList.add('hl-zone');
-    if (selVal && (board[i] || puzzle[i]) === selVal) el.classList.add('hl-num');
-  });
+/**
+ * Скасування вибору (закриття модалки без дій)
+ */
+function cancelInput() {
+    selectedCell = null;
+    document.getElementById('input-overlay').style.display = 'none';
+    refreshBoard();
 }
 
-function selectCell(i) {
-  if (gameOver) return;
-  selected = i;
-  selectedLabel.textContent = `Рядок ${ROW_N[Math.floor(i/9)]}  ·  Колонка ${COL_N[i%9]}`;
-  highlight();
+/**
+ * Обробка введеної гравцем цифри
+ */
+function submitNumber(num) {
+    if (!selectedCell) return;
+    let { r, c } = selectedCell;
+    let key = r + '-' + c;
+
+    document.getElementById('input-overlay').style.display = 'none'; // Ховаємо модалку вибору
+    selectedCell = null;
+
+    // Перевірка: чи збігається введена цифра з прорахованим правильним рішенням судоку
+    if (num === solution[r][c]) {
+        board[r][c] = num; // Записуємо правильну цифру на дошку
+        errorCells.delete(key);
+    } else {
+        errorCount++; // Збільшуємо лічильник помилок
+        document.getElementById('errors').textContent = errorCount;
+        errorCells.add(key); // Додаємо клітинку в список червоного підсвічування
+        
+        // Через 1.5 секунди прибираємо червоне виділення помилки
+        setTimeout(() => {
+            errorCells.delete(key);
+            refreshBoard();
+        }, 1500);
+
+        // Перевірка ліміту поразок (програш при 3 помилках)
+        if (errorCount >= 3) {
+            gameOver = true;
+            clearInterval(timerInterval); // Зупиняємо час
+            setTimeout(() => {
+                alert('Ви допустили 3 помилки! Гра закінчена.\nНатисніть «Нова гра» щоб спробувати знову.');
+                revealSolution(); // Показуємо розв'язок судоку гравцю
+            }, 300);
+        }
+    }
+
+    refreshBoard(); // Перемальовуємо WebDataRocks
+    if (!gameOver) checkWin(); // Перевіряємо, чи не виграв гравець цим ходом
 }
 
-function enterNum(num) {
-  if (gameOver || selected < 0 || puzzle[selected]) return;
-  if (notesChk.checked) {
-    board[selected] = 0;
-    notes[selected].has(num) ? notes[selected].delete(num) : notes[selected].add(num);
-    render(); syncWDR(); return;
-  }
-  notes[selected].clear();
-  board[selected] = num;
-  if (num !== solution[selected]) {
-    errors++;
-    errorCountEl.textContent = errors;
-    if (errors >= MAX_ERR) { render(); syncWDR(); endGame(false); return; }
-  }
-  render(); syncWDR();
-  if (board.every((v, i) => puzzle[i] ? true : v === solution[i])) endGame(true);
+/**
+ * Функція капітуляції / програшу: відкриває всі правильні цифри на полі
+ */
+function revealSolution() {
+    for (let r = 0; r < 9; r++)
+        for (let c = 0; c < 9; c++)
+            board[r][c] = solution[r][c];
+    refreshBoard();
 }
 
-function clearCell() {
-  if (gameOver || selected < 0 || puzzle[selected]) return;
-  board[selected] = 0; notes[selected].clear();
-  render(); syncWDR();
+/**
+ * Перевірка, чи заповнене все поле без помилок (Умова перемоги)
+ */
+function checkWin() {
+    for (let r = 0; r < 9; r++)
+        for (let c = 0; c < 9; c++)
+            if (board[r][c] !== solution[r][c]) return; // Якщо є хоч одна невідповідність — гра продовжується
+
+    clearInterval(timerInterval); // Зупиняємо таймер переможця
+    gameOver = true;
+
+    // Заповнюємо дані на екрані перемоги та відображаємо його
+    document.getElementById('win-time').textContent = formatTime(secondsElapsed);
+    document.getElementById('win-errors').textContent = errorCount;
+    document.getElementById('win-overlay').style.display = 'flex';
 }
 
-function endGame(win) {
-  gameOver = true;
-  messageEl.classList.remove('hidden');
-  messageEl.innerHTML = win
-    ? `<div>ПЕРЕМОГА!</div><p>Головоломку розв'язано!</p><button onclick="startGame()">НОВА ГРА</button>`
-    : `<div>ГРА ЗАКІНЧЕНА</div><p>Перевищено ліміт помилок</p><button onclick="startGame()">НОВА ГРА</button>`;
+/**
+ * Синхронізація внутрішніх даних JS гри із віджетом WebDataRocks
+ */
+function refreshBoard() {
+    if (pivot) {
+        pivot.updateData({ data: getWDRData() }); // Оновлення датасету всередині Pivot
+        setTimeout(hideAllZerosDirectly, 50); // ХАК: Зачищаємо нулі після рендеру
+    }
 }
 
-function startGame() {
-  generate();
-  board    = puzzle.map(v => v || 0);
-  notes    = Array.from({ length: 81 }, () => new Set());
-  selected = -1; errors = 0; gameOver = false;
-  errorCountEl.textContent = '0';
-  selectedLabel.textContent = 'Оберіть клітинку';
-  messageEl.classList.add('hidden');
-  render();
-  initWDR();
+/**
+ * Основна функція генерації та запуску нової гри
+ */
+function startNewGame() {
+    // Ховаємо всі модальні вікна
+    document.getElementById('win-overlay').style.display = 'none';
+    document.getElementById('input-overlay').style.display = 'none';
+
+    // Скидання дефолтних налаштувань стану
+    errorCells.clear();
+    errorCount = 0;
+    gameOver = false;
+    selectedCell = null;
+    document.getElementById('errors').textContent = '0';
+
+    // Створюємо пусту матрицю розв'язку 9х9, заповнену нулями
+    solution = Array.from({ length: 9 }, () => Array(9).fill(0));
+    
+    // Рандомізація: перемішуємо числа від 1 до 9 і закидаємо у перший рядок як зерно для генерації
+    let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    numbers.sort(() => Math.random() - 0.5);
+    for (let c = 0; c < 9; c++) {
+        if (Math.random() > 0.5) {
+            solution[0][c] = numbers[c];
+        }
+    }
+
+    // Викликаємо алгоритм solve(), який на базі зерна створює 100% валідну заповнену матрицю судоку
+    solve(solution);
+
+    // Копіюємо згенероване рішення в ігрове поле гравця (глибоке копіювання масиву)
+    board = [];
+    for (let r = 0; r < 9; r++) {
+        board.push([...solution[r]]);
+    }
+
+    // Розраховуємо, скільки клітинок треба сховати відповідно до FILL_PERCENTAGE
+    let totalCells = 81;
+    let cellsToShow = Math.round(totalCells * (FILL_PERCENTAGE / 100));
+    let cellsToHide = totalCells - cellsToShow;
+
+    // Створюємо масив індексів від 0 до 80 і перемішуємо його, щоб випадково ховати клітинки
+    let indices = [];
+    for (let i = 0; i < totalCells; i++) { indices.push(i); }
+    indices.sort(() => Math.random() - 0.5);
+
+    // Занулюємо (ховаємо) випадкові клітинки на дошці гравця
+    for (let i = 0; i < cellsToHide; i++) {
+        let cellIndex = indices[i];
+        let r = Math.floor(cellIndex / 9);
+        let c = cellIndex % 9;
+        board[r][c] = 0;
+    }
+
+    // Фіксуємо масив початкових підказок (все, що не 0 на старті — це true)
+    givens = [];
+    for (let r = 0; r < 9; r++) {
+        givens.push(board[r].map(v => v !== 0));
+    }
+
+    startTimer(); // Запускаємо лічильник часу
+
+    // Якщо екземпляр WebDataRocks вже існує — просто оновлюємо дані, інакше — створюємо його з нуля
+    if (pivot) {
+        refreshBoard();
+    } else {
+        initPivot();
+    }
 }
 
-document.addEventListener('keydown', e => {
-  if (gameOver) return;
-  if (e.key >= '1' && e.key <= '9') { enterNum(+e.key); return; }
-  if (e.key === 'Backspace' || e.key === 'Delete') { clearCell(); return; }
-  const dirs = { ArrowUp: [-1,0], ArrowDown: [1,0], ArrowLeft: [0,-1], ArrowRight: [0,1] };
-  if (!dirs[e.key]) return;
-  e.preventDefault();
-  if (selected < 0) { selectCell(0); return; }
-  const [dr, dc] = dirs[e.key];
-  const r = Math.floor(selected / 9), c = selected % 9;
-  selectCell(((r + dr + 9) % 9) * 9 + (c + dc + 9) % 9);
-});
+/**
+ * Ініціалізація та конфігурація об'єкта WebDataRocks
+ */
+function initPivot() {
+    pivot = new WebDataRocks({
+        container: "#wdr-component", // ID HTML-тегу куди вмонтується таблиця
+        toolbar: false,              // Вимикаємо верхній фінансовий тулбар WebDataRocks
+        customizeCell: customizeCell,// Підключаємо нашу функцію стилізації
+        report: {
+            dataSource: { data: getWDRData() }, // Передаємо сформований JSON-масив даних
+            slice: {
+                // Конфігуруємо зріз (Slice) зведеної таблиці: що йде в рядки, а що в колонки
+                rows: [{ uniqueName: "Рядок" }],
+                columns: [{ uniqueName: "Колонка" }],
+                measures: [{ uniqueName: "Значення", aggregation: "sum" }] // Значення у клітинці
+            },
+            options: {
+                grid: {
+                    // Вимикаємо зайві для гри фінансові/аналітичні елементи відображення
+                    showTotals: "off",
+                    showGrandTotals: "off",
+                    showHeaders: false,
+                    showFilter: false,
+                    showEmptyRows: true,
+                    showEmptyColumns: true
+                }
+            }
+        }
+    });
 
-document.getElementById('new-game-btn').addEventListener('click', startGame);
-document.getElementById('clear-btn').addEventListener('click', clearCell);
-document.querySelectorAll('.num-btn').forEach(btn =>
-  btn.addEventListener('click', () => enterNum(+btn.dataset.num))
-);
+    // Подія закінчення побудови звіту таблиці: відразу ховаємо стартові нулі
+    pivot.on('reportcomplete', function() {
+        hideAllZerosDirectly();
+    });
 
-startGame();
+    // Подія Кліку на комірку зведеної таблиці
+    pivot.on('cellclick', function(cell) {
+        // Перевіряємо валідність об'єкта кліку
+        if (!cell || !cell.rows || !cell.columns || cell.rows.length === 0 || cell.columns.length === 0) return;
+
+        // Дізнаємося індекси клітинки за її назвою у WebDataRocks
+        let clickedR = parseInt(cell.rows[0].uniqueName.replace(/\D/g, '')) - 1;
+        let clickedC = parseInt(cell.columns[0].uniqueName.replace(/\D/g, '')) - 1;
+
+        if (isNaN(clickedR) || isNaN(clickedC)) return;
+        if (clickedR < 0 || clickedR > 8 || clickedC < 0 || clickedC > 8) return;
+
+        // Якщо користувач клікнув по дефолтній цифрі-підказці — ігноруємо дію (її не можна міняти)
+        if (givens[clickedR][clickedC]) return;
+
+        // Якщо все ок — викликаємо модалку для зміни цифри в цій комірці
+        showInputOverlay(clickedR, clickedC);
+    });
+}
+
+// Першочерговий автоматичний запуск гри при завантаженні сторінки скриптом
+startNewGame();

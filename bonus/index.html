@@ -1,64 +1,46 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Судоку 9×9</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Судоку на WebDataRocks</title>
 
-  <link rel="stylesheet" href="https://cdn.webdatarocks.com/latest/webdatarocks.min.css">
-  <script src="https://cdn.webdatarocks.com/latest/webdatarocks.toolbar.min.js"></script>
-  <script src="https://cdn.webdatarocks.com/latest/webdatarocks.min.js"></script>
+    <link href="https://cdn.webdatarocks.com/latest/webdatarocks.min.css" rel="stylesheet" />
+    <script src="https://cdn.webdatarocks.com/latest/webdatarocks.js"></script>
 
-  <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header>
-    <h1>   СУДОКУ</h1>
-    <div class="scoreboard" role="status" aria-live="polite">
-      <span>ПОМИЛКИ: <strong id="error-count">0</strong> / 3</span>
+    <div id="dashboard">
+        <div id="dashboard-inner">
+            <span id="title-label">Судоку</span>
+            <span class="stat">час гри: <span id="timer">00:00</span></span>
+            <span class="stat">Помилки: <span id="errors">0</span>/3</span>
+            <button id="new-game-btn" onclick="startNewGame()">Нова гра</button>
+        </div>
     </div>
-    <button id="new-game-btn">НОВА ГРА</button>
-  </header>
 
-  <main>
-    <section aria-label="Ігрове поле">
-      <div id="pivot-container"></div>
-      <div id="sudoku-board"></div>
-      <div id="game-message" class="hidden" role="alert"></div>
-    </section>
+    <div id="wdr-component"></div>
 
-    <aside aria-label="Панель керування"> 
-      <p id="selected-label">Оберіть клітинку</p>
+    <div id="input-overlay" style="display:none;">
+        <div id="input-box">
+            <p id="input-label">Введіть цифру:</p>
+            <div id="num-buttons"></div>
+            <button id="cancel-btn" onclick="cancelInput()">✕ Скасувати</button>
+        </div>
+    </div>
 
-      <div class="numpad">
-        <button class="num-btn" data-num="1">1</button>
-        <button class="num-btn" data-num="2">2</button>
-        <button class="num-btn" data-num="3">3</button>
-        <button class="num-btn" data-num="4">4</button>
-        <button class="num-btn" data-num="5">5</button>
-        <button class="num-btn" data-num="6">6</button>
-        <button class="num-btn" data-num="7">7</button>
-        <button class="num-btn" data-num="8">8</button>
-        <button class="num-btn" data-num="9">9</button>
-      </div>
+    <div id="win-overlay" style="display:none;">
+        <div id="win-box">
+            <div id="win-emoji">🎉</div>
+            <h2>Вітаємо!</h2>
+            <p>Судоку вирішено за <strong id="win-time"></strong></p>
+            <p>Помилок: <strong id="win-errors"></strong></p>
+            <button onclick="startNewGame()">Грати знову</button>
+        </div>
+    </div>
 
-      <button id="clear-btn">ОЧИСТИТИ</button>
-
-      <label class="notes-label">
-        <input type="checkbox" id="notes-mode">
-        <span class="toggle-track"></span>
-        Режим нотаток
-      </label>
-
-      <ul class="legend">
-        <li><span class="dot given"></span> Дано</li>
-        <li><span class="dot user-ok"></span> Введено</li>
-        <li><span class="dot user-err"></span> Помилка</li>
-      </ul>
-    </aside>
-  </main>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
