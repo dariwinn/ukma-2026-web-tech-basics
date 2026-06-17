@@ -195,7 +195,7 @@ function startGame() {
   render();
   initWDR();
 }
-//
+
 document.addEventListener('keydown', e => {
   if (gameOver) return;
   if (e.key >= '1' && e.key <= '9') { enterNum(+e.key); return; }
