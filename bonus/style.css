@@ -1,0 +1,198 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f4f8;
+    min-height: 100vh; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#dashboard {
+    width: 100%;
+    background: #b25089;
+    color: #f1f5f9;
+    padding: 12px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+#dashboard-inner {
+    max-width: 850px;
+    margin: 0 auto; 
+    display: flex;
+    align-items: center;
+    gap: 25px; 
+}
+
+#title-label {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-right: auto; 
+}
+
+.stat {
+    font-size: 14px;
+    padding: 4px 12px;
+    border-radius: 20px; 
+}
+
+#new-game-btn {
+    background: #ab076f; 
+    color: #fff;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#new-game-btn:hover { background: #6a004a; }
+
+#wdr-component {
+
+    width: 384px !important;      
+    max-width: 384px !important;
+    height: 415px !important;   
+    max-height: 415px !important;
+    margin: 24px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+    overflow: hidden;
+    border: 3px solid #760047;  
+}
+
+#wdr-component .wdr-grid-layout,
+#wdr-component table {
+    width: 378px !important;
+    max-width: 378px !important;
+}
+
+/* Підсвічування клітинки при наведенні мишки */
+.wdr-ui-element .wdr-table td.cell-empty:hover {
+    background: #e0f2fe !important;
+}
+
+
+.wdr-ui-element .wdr-table td.cell-player:hover {
+    background: #e0f2fe !important;
+}
+
+#input-overlay {
+    position: fixed;
+    inset: 0; 
+    background: rgba(15,23,42,0.55); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+}
+
+#input-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+    text-align: center;
+    min-width: 300px;
+}
+
+/* Текст підказки у вікні введення цифри */
+#input-label {
+    font-size: 15px;
+    color: #5b004d;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+#num-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 рівні колонки */
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+
+#num-buttons button {
+    background: #ffdef1;
+    border: 1.5px solid #954787;
+    border-radius: 10px;
+    width: 64px;
+    height: 64px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+}
+/* Ефект наведення на цифру */
+#num-buttons button:hover  { background: #ff81ca; color: #fff; border-color: #954787; }
+#num-buttons button:active { transform: scale(0.94); }
+
+#cancel-btn {
+    margin-top: 4px;
+    background: transparent;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: 14px;
+    color: #3d012d;
+    cursor: pointer;
+}
+#cancel-btn:hover { background: #f1f5f9; }
+
+#win-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+}
+
+#win-box {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 48px;
+    text-align: center;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.25);
+}
+
+
+#win-box h2 {
+    font-size: 28px;
+    color: #1e293b;
+    margin-bottom: 12px;
+}
+
+#win-box p {
+    color: #475569;
+    font-size: 16px;
+    margin-bottom: 6px;
+}
+
+#win-box button {
+    margin-top: 20px;
+    background: #9f0065;
+    color: #fff;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#win-box button:hover { background: #9f0065; }

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Судоку на WebDataRocks</title>
+
+    <link href="https://cdn.webdatarocks.com/latest/webdatarocks.min.css" rel="stylesheet" />
+    <script src="https://cdn.webdatarocks.com/latest/webdatarocks.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="dashboard">
+        <div id="dashboard-inner">
+            <span id="title-label">Судоку</span>
+            <span class="stat">час гри: <span id="timer">00:00</span></span>
+            <span class="stat">Помилки: <span id="errors">0</span>/3</span>
+            <button id="new-game-btn" onclick="startNewGame()">Нова гра</button>
+        </div>
+    </div>
+
+    <div id="wdr-component"></div>
+
+    <div id="input-overlay" style="display:none;">
+        <div id="input-box">
+            <p id="input-label">Введіть цифру:</p>
+            <div id="num-buttons"></div>
+            <button id="cancel-btn" onclick="cancelInput()">✕ Скасувати</button>
+        </div>
+    </div>
+
+    <div id="win-overlay" style="display:none;">
+        <div id="win-box">
+            <h2>Вітаємо!</h2>
+            <p>Судоку вирішено за <strong id="win-time"></strong></p>
+            <p>Помилок: <strong id="win-errors"></strong></p>
+            <button onclick="startNewGame()">Грати знову</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+/* базові налаштування сторінки та центрування */
+body { 
+    background-color: #e0e0e0;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+/* головний контейнер інтерфейсу */
+.main-container {
+    display: flex;
+    gap: 20px;
+    width: 90%;
+    max-width: 1000px;
+    background: #f4f4f4;
+    padding: 30px;
+    border: 1px solid #ccc;
+}
+/* адаптивність: переведення в один стовпчик на малих екранах */
+@media (max-width: 650px) {
+    .main-container {
+        flex-direction: column;
+    }
+}
+/* універсальна картка з тінню */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+/* пропорції секції редактора та секції статистики */
+.editor-section { flex: 2; }
+.stats-section { flex: 1; }
+
+.input-group {
+    display: flex;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+/* стилі текстового поля вводу */
+.input-group input {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    outline: none;
+    border-radius: 4px 0 0 4px; 
+}
+/* кнопка додавання товару */
+.btn-add {
+    background-color: #2b82c9;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0 4px 4px 0; 
+    position: relative; 
+}
+/* рядок окремого товару у списку */
+.product-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+/* верхня лінія лише для першого товару в списку */
+.items-list .product-row:first-child {
+    border-top: 1px solid #eee;
+}
+/* закреслення назви купленого товару */
+.product-name.bought {
+    text-decoration: line-through;
+
+}
+/* контейнер для кнопок керування */
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+/* плашка з цифрою кількості товару */
+.quantity-badge {
+    background: #eee;
+    padding: 5px 15px;
+    border-radius: 4px;
+}
+/* фіксована зона для відображення кількості */
+.quantity-wrapper {
+    display: flex;
+    justify-content: center; 
+    width: 90px; 
+    margin-right: 35px; 
+}
+/* вирівнювання елементів керування по правому краю */
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; 
+}
+/* загальні стилі для круглих кнопок */
+.btn-round {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+/* колірні схеми для кнопок плюс та мінус */
+.btn-plus { background: #28a745; }
+.btn-minus { background: #dc3545; }
+.btn-minus-light { background: #f5aaaa; }
+
+/* кнопка зміни статусу купленого товару */
+.btn-status {
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+/* квадратна кнопка видалення товару */
+.btn-danger {
+    background: #dc3545;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+/*тег для товарів у статистиці */
+.tag {
+    background: #eee;
+    padding: 5px 10px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin: 5px;
+}
+/* компактний тег для товарів у статистиці */
+.tag-num {
+    background: #e67e22;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* загальний клас для закреслення тексту */
+.strike { text-decoration: line-through; 
+ }
+/* підготовка позиціонування для елементів із підказками */
+[data-tooltip] {
+    position: relative;
+}
+/* створення та приховування тексту підказки за замовчуванням */
+[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.5);
+    background: #4b0082;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+/* плавна поява та збільшення підказки при наведенні */
+[data-tooltip]:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1) translateY(-5px);
+}
+/* фіксована плашка-віджет у лівому нижньому кутку */
+.badge {
+    position: fixed;
+    bottom: 0;
+    left: 30px;
+    background-color: #4b0082;
+    color: white;
+    padding: 10px 0; 
+    
+    min-width: 180px; 
+    
+    border-radius: 15px 15px 0 0;
+    transition: height 0.5s ease, background-color 0.5s ease; 
+    cursor: pointer;
+    overflow: hidden;
+
+    height: 40px; 
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+/* збільшення висоти та зміна кольору віджета при наведенні */
+.badge:hover {
+    height: 80px; 
+    background-color: #0d15ad;
+}
+/* заголовок віджета з вирівнюванням по висоті */
+.badge-header {
+    font-weight: bold;
+    line-height: 40px; 
+}
+/* прихований додатковий контент всередині віджета */
+.badge-content {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-size: 13px;
+    margin-top: 5px;
+}
+/* відображення прихованого контенту при наведенні на віджет */
+.badge:hover .badge-content {
+    opacity: 1;
+}
+/* стилі віджета для друкованої версії сторінки */
+@media print {
+    .badge {
+        background: white !important;
+        color: #090082 !important;
+        border: 2px solid #090082;
+    }
+    
+    .badge-header {
+        visibility: hidden;
+    }
+/* підміна заголовка на ім'я автора при друці */
+    .badge-header::after {
+        content: "Дарія Коломоєць"; 
+        visibility: visible;
+        position: absolute;
+        left: 20px;
+    }
+}
