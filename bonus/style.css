@@ -1,60 +1,52 @@
-/* Глобальне скидання стандартних відступів для всіх елементів */
 * {
-    box-sizing: border-box; /* Враховувати padding та border у загальну ширину/висоту елемента */
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-/* Стилі для всього тіла сторінки */
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
-    background: #f0f4f8; /* Світло-сірий бекграунд */
-    min-height: 100vh; /* Розтягнути на всю висоту екрана */
+    background: #f0f4f8;
+    min-height: 100vh; 
     display: flex;
-    flex-direction: column; /* Елементи розташовуються вертикально один за одним */
-    align-items: center; /* Центрування вмісту по горизонталі */
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Верхня панель (табло) гри */
 #dashboard {
     width: 100%;
-    background: #1e293b; /* Темно-синій колір */
+    background: #b25089;
     color: #f1f5f9;
     padding: 12px 24px;
-    position: sticky; /* Панель залишається зверху при скролі */
+    position: sticky;
     top: 0;
-    z-index: 100; /* Відображається поверх ігрового поля */
+    z-index: 100; 
     box-shadow: 0 2px 8px rgba(0,0,0,0.25);
 }
 
-/* Внутрішній контейнер табло для обмеження максимальної ширини */
 #dashboard-inner {
-    max-width: 820px;
-    margin: 0 auto; /* Центрування по центру сторінки */
+    max-width: 850px;
+    margin: 0 auto; 
     display: flex;
     align-items: center;
-    gap: 20px; /* Відступи між елементами панелі */
+    gap: 25px; 
 }
 
-/* Заголовок гри "Судоку" */
 #title-label {
     font-size: 18px;
     font-weight: 700;
     letter-spacing: 0.5px;
-    margin-right: auto; /* Штовхає всі інші елементи (таймер, кнопку) праворуч */
+    margin-right: auto; 
 }
 
-/* Загальний стиль для блоків статистики (таймер, помилки) */
 .stat {
     font-size: 14px;
-    background: rgba(255,255,255,0.1); /* Напівпрозорий білий фон */
     padding: 4px 12px;
-    border-radius: 20px; /* Округлені краї */
+    border-radius: 20px; 
 }
 
-/* Кнопка запуску нової гри */
 #new-game-btn {
-    background: #3b82f6; /* Блакитний колір */
+    background: #ab076f; 
     color: #fff;
     border: none;
     padding: 6px 16px;
@@ -62,14 +54,13 @@ body {
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s; /* Плавна зміна кольору при наведенні */
+    transition: background 0.2s;
 }
-/* Зміна кольору кнопки при наведенні курсору */
-#new-game-btn:hover { background: #2563eb; }
 
-/* Основний контейнер, куди WebDataRocks монтує свою зведену таблицю */
+#new-game-btn:hover { background: #6a004a; }
+
 #wdr-component {
-    /* Використовується !important для жорсткого перебивання внутрішніх стилів бібліотеки */
+
     width: 384px !important;      
     max-width: 384px !important;
     height: 415px !important;   
@@ -78,120 +69,36 @@ body {
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.10);
-    overflow: hidden; /* Ховаємо скроллбари самої таблиці */
-    border: 3px solid #1e293b;  /* Товста зовнішня рамка ігрового поля */
+    overflow: hidden;
+    border: 3px solid #760047;  
 }
 
-/* Фіксація ширини внутрішніх табличних шарів WebDataRocks під розмір контейнера */
 #wdr-component .wdr-grid-layout,
 #wdr-component table {
     width: 378px !important;
     max-width: 378px !important;
 }
 
-/* ХАК: Повністю ховаємо заголовки рядків, колонок та кутову кнопку фільтрів WebDataRocks */
-.wdr-ui-element .wdr-columns-title,
-.wdr-ui-element .wdr-rows-title,
-.wdr-ui-element .wdr-grid-container th.wdr-header:first-child, 
-.wdr-ui-element .wdr-grid-container td.wdr-header {           
-    display: none !important;
-}
-
-/* Стилізація кожної окремої клітинки та шапки ігрового поля */
-.wdr-ui-element .wdr-table td,
-.wdr-ui-element .wdr-table th {
-    /* Створюємо ідеально квадратні клітинки 42х42 пікселі */
-    width: 42px !important;
-    min-width: 42px !important;
-    max-width: 42px !important;
-    height: 42px !important;
-    min-height: 42px !important;
-    max-height: 42px !important;
-    
-    padding: 0 !important;          
-    line-height: 42px !important;  /* Центрування тексту по вертикалі */
-    text-align: center !important;  /* Центрування тексту по горизонталі */
-    vertical-align: middle !important;
-    font-size: 20px !important;
-    font-weight: 600 !important;
-    cursor: pointer;
-    transition: background 0.15s;
-    border: 1px solid #cbd5e1 !important; /* Тонка сітка між клітинками */
-    box-sizing: border-box !important;
-}
-
-/* Стилі для верхнього технічного хедера (якщо він залишився видимим) */
-.wdr-ui-element .wdr-table th.wdr-header {
-    background: #f1f5f9 !important;
-    color: #64748b !important;
-    font-size: 14px !important;
-    cursor: default !important;
-    border-bottom: 2px solid #1e293b !important;
-}
-
-/* ХАК: Створення жирних меж 3х3 для класичного вигляду блоків Судоку */
-.wdr-ui-element .wdr-table td.box-border-right  { border-right: 3px solid #1e293b !important; }
-.wdr-ui-element .wdr-table td.box-border-bottom { border-bottom: 3px solid #1e293b !important; }
-
-/* Стиль для дефолтних (початкових) цифр у судоку (які не можна змінювати) */
-.wdr-ui-element .wdr-table td.cell-given {
-    color: #1e293b !important; /* Темний колір шрифту */
-    background: #f8fafc !important; /* Легкий сірий фон */
-    cursor: default !important;
-}
-
-/* Стиль для порожніх клітинок, де гравець має зробити хід */
-.wdr-ui-element .wdr-table td.cell-empty {
-    color: transparent !important;   /* ХАК: робимо текст прозорим, щоб сховати "0" від WebDataRocks */
-    background: #fff !important;
-}
 /* Підсвічування клітинки при наведенні мишки */
 .wdr-ui-element .wdr-table td.cell-empty:hover {
     background: #e0f2fe !important;
 }
 
-/* Стиль для цифр, які правильно ввів гравець */
-.wdr-ui-element .wdr-table td.cell-player {
-    color: #1d4ed8 !important; /* Синій колір для ходів гравця */
-    background: #ffffff !important;
-}
+
 .wdr-ui-element .wdr-table td.cell-player:hover {
     background: #e0f2fe !important;
 }
 
-/* Стиль для клітинки, в якій допущено помилку */
-.wdr-ui-element .wdr-table td.cell-error {
-    color: #dc2626 !important; /* Червоний текст */
-    background: #fef2f2 !important; /* Червонуватий фон */
-    animation: shake 0.3s ease; /* Анімація трусіння клітинки */
-}
-
-/* Анімація візуального ефекту помилки (трусіння вліво-вправо) */
-@keyframes shake {
-    0%,100% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    75% { transform: translateX(4px); }
-}
-
-/* Стиль для поточної обраної клітинки */
-.wdr-ui-element .wdr-table td.cell-selected {
-    background: #bfdbfe !important; /* Блакитний фон виділення */
-    outline: 2px solid #3b82f6 !important; /* Яскрава рамка */
-    outline-offset: -2px;
-}
-
-/* Модальне вікно (оверлей) вибору цифри */
 #input-overlay {
     position: fixed;
-    inset: 0; /* Розтягнути на весь екран (top:0, left:0, right:0, bottom:0) */
-    background: rgba(15,23,42,0.55); /* Темний напівпрозорий фон */
+    inset: 0; 
+    background: rgba(15,23,42,0.55); 
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 200;
 }
 
-/* Контентний блок всередині модалки введення */
 #input-box {
     background: #fff;
     border-radius: 16px;
@@ -204,12 +111,11 @@ body {
 /* Текст підказки у вікні введення цифри */
 #input-label {
     font-size: 15px;
-    color: #475569;
+    color: #5b004d;
     margin-bottom: 20px;
     font-weight: 500;
 }
 
-/* Сітка 3х3 для відображення кнопок з цифрами 1-9 */
 #num-buttons {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* 3 рівні колонки */
@@ -217,10 +123,10 @@ body {
     margin-bottom: 16px;
 }
 
-/* Стилі для кнопок вибору цифр (1-9) */
+
 #num-buttons button {
-    background: #f1f5f9;
-    border: 1.5px solid #cbd5e1;
+    background: #ffdef1;
+    border: 1.5px solid #954787;
     border-radius: 10px;
     width: 64px;
     height: 64px;
@@ -231,11 +137,9 @@ body {
     transition: background 0.15s, transform 0.1s;
 }
 /* Ефект наведення на цифру */
-#num-buttons button:hover  { background: #3b82f6; color: #fff; border-color: #3b82f6; }
-/* Ефект натискання (кнопка візуально трохи зменшується) */
+#num-buttons button:hover  { background: #ff81ca; color: #fff; border-color: #954787; }
 #num-buttons button:active { transform: scale(0.94); }
 
-/* Кнопка "Скасувати" у модальному вікні */
 #cancel-btn {
     margin-top: 4px;
     background: transparent;
@@ -243,12 +147,11 @@ body {
     border-radius: 8px;
     padding: 8px 20px;
     font-size: 14px;
-    color: #64748b;
+    color: #3d012d;
     cursor: pointer;
 }
 #cancel-btn:hover { background: #f1f5f9; }
 
-/* Фінальний оверлей еккрану перемоги */
 #win-overlay {
     position: fixed;
     inset: 0;
@@ -259,7 +162,6 @@ body {
     z-index: 300;
 }
 
-/* Вікно з повідомленням про перемогу */
 #win-box {
     background: #fff;
     border-radius: 20px;
@@ -268,8 +170,6 @@ body {
     box-shadow: 0 12px 48px rgba(0,0,0,0.25);
 }
 
-/* Розмір емодзі на екрані перемоги */
-#win-emoji { font-size: 56px; margin-bottom: 12px; }
 
 #win-box h2 {
     font-size: 28px;
@@ -283,10 +183,9 @@ body {
     margin-bottom: 6px;
 }
 
-/* Кнопка "Грати знову" */
 #win-box button {
     margin-top: 20px;
-    background: #3b82f6;
+    background: #9f0065;
     color: #fff;
     border: none;
     padding: 12px 32px;
@@ -296,4 +195,4 @@ body {
     cursor: pointer;
     transition: background 0.2s;
 }
-#win-box button:hover { background: #2563eb; }
+#win-box button:hover { background: #9f0065; }
